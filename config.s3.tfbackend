@@ -1,0 +1,3 @@
+# S3 bucket name and region to write Terraform state to.
+bucket="terraform-exafunction"
+region="us-east-1"
