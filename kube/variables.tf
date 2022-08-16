@@ -8,6 +8,16 @@ variable "api_key" {
   }
 }
 
+variable "exafunction_chart_version" {
+  description = "Version of the Exafunction Helm chart to install."
+  type        = string
+
+  validation {
+    condition     = can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", var.exafunction_chart_version))
+    error_message = "Invalid Helm chart version format."
+  }
+}
+
 variable "region" {
   description = "Region for existing EKS cluster."
   type        = string

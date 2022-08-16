@@ -33,6 +33,8 @@ This file contains the configuration for the Terraform modules. Users should mod
         * The set of subnet IDs can be easily updated later if you end up running applications in a new subnet.
 * `api_key`: The API key used to identify your company to Exafunction.
     * This should be provided by Exafunction.
+* `exafunction_chart_version`: The version of the Exafunction Helm chart to install.
+    * This should be in the release provided by Exafunction.
 
 ### [`values.yaml`](/values.yaml)
 Users should modify this file to provide the image names for ExaDeploy system components. These image names should be in the release provided by Exafunction.

@@ -11,3 +11,6 @@ vpc_peering_config = {
 
 # API key used to identify the company to Exafunction.
 api_key = "<API_KEY>"
+
+# Version of Exafunction Helm chart to install.
+exafunction_chart_version = "<CHART_VERSION>"

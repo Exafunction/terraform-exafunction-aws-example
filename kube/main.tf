@@ -3,4 +3,5 @@ module "exafunction_kube" {
   values_yaml         = var.values_file_path
   api_key             = var.api_key
   remote_state_config = var.remote_state_config
+  chart_version       = var.exafunction_chart_version
 }
