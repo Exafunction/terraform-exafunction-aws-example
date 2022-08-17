@@ -63,18 +63,23 @@ Applications running on external AWS infrastructure (i.e. not within the ExaDepl
 
 To get these addresses, run these commands from the repository's root directory:
 
+### Update Local Kubeconfig
+```bash
+aws eks update-kubeconfig \
+    --region $(terraform -chdir=aws output region | tr -d '"') \
+    --name $(terraform -chdir=aws output cluster_id | tr -d '"')
+```
+
 ### Module Repository
 ```bash
 kubectl get service module-repository-service \
-    --kubeconfig aws/kubeconfig_exafunction-cluster \
     -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'
 ```
 
 ### Scheduler
 ```bash
 kubectl get service scheduler-service \
-    --kubeconfig aws/kubeconfig_exafunction-cluster \
     -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'
 ```
 
-Both should return addresses in the format of `<elb_name>-<digits>.<region>.elb.amazonaws.com`.
+Both should return addresses in the format of `internal-<elb_name>-<digits>.<region>.elb.amazonaws.com`.
