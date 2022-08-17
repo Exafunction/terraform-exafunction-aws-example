@@ -59,7 +59,7 @@ from the repoistory's root directory. This will delete all resources created by 
 ## Running applications with ExaDeploy
 For instructions on how to write and run applications that offload GPU computations to ExaDeploy, see our Quickstart Guide.
 
-Applications running on external AWS infrastructure (i.e. not within the ExaDeploy cluster) will need to use the external load balancer addresses for the ExaDeploy module repository and scheduler services.
+Applications running on external AWS infrastructure (i.e. not within the ExaDeploy cluster) will need to use the load balancer addresses for the ExaDeploy module repository and scheduler services.
 
 To get these addresses, run these commands from the repository's root directory:
 

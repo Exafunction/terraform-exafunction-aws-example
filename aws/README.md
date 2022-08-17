@@ -11,13 +11,13 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.25.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.26.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_exafunction"></a> [exafunction](#module\_exafunction) | https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-0d74677.tar.gz//terraform-exafunction-aws-0d74677 | n/a |
+| <a name="module_exafunction"></a> [exafunction](#module\_exafunction) | https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-695bc2c.tar.gz//terraform-exafunction-aws-695bc2c | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 | <a name="module_vpc_peer"></a> [vpc\_peer](#module\_vpc\_peer) | ./modules/vpc_peer | n/a |
 
@@ -52,6 +52,7 @@ No requirements.
 | <a name="output_rds_password"></a> [rds\_password](#output\_rds\_password) | Password for the RDS instance |
 | <a name="output_rds_port"></a> [rds\_port](#output\_rds\_port) | Port for the RDS instance |
 | <a name="output_rds_username"></a> [rds\_username](#output\_rds\_username) | Username for the RDS instance |
+| <a name="output_region"></a> [region](#output\_region) | Region of the EKS cluster. |
 | <a name="output_s3_bucket_id"></a> [s3\_bucket\_id](#output\_s3\_bucket\_id) | ID of the S3 bucket |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | ID of the VPC. |
 | <a name="output_worker_security_group_id"></a> [worker\_security\_group\_id](#output\_worker\_security\_group\_id) | ID of the EKS workers security group |
