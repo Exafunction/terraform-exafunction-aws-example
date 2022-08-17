@@ -13,7 +13,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.25.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.26.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -35,6 +35,7 @@ No requirements.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_api_key"></a> [api\_key](#input\_api\_key) | API key used to identify the user to the Exafunction API. | `string` | n/a | yes |
+| <a name="input_exafunction_chart_version"></a> [exafunction\_chart\_version](#input\_exafunction\_chart\_version) | Version of the Exafunction Helm chart to install. | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Region for existing EKS cluster. | `string` | n/a | yes |
 | <a name="input_remote_state_config"></a> [remote\_state\_config](#input\_remote\_state\_config) | Configuration parameters for the cluster Terraform's remote state (S3). | <pre>object({<br>    bucket = string<br>    key    = string<br>    region = string<br>  })</pre> | n/a | yes |
 | <a name="input_values_file_path"></a> [values\_file\_path](#input\_values\_file\_path) | Path to values YAML file to pass to exafunction-cluster Helm chart. Format should match values.yaml.example. | `string` | n/a | yes |
