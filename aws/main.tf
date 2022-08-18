@@ -33,7 +33,7 @@ module "vpc" {
 
 # Create EKS cluster.
 module "exafunction" {
-  source       = "https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-695bc2c.tar.gz//terraform-exafunction-aws-695bc2c"
+  source       = "https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-29a260f.tar.gz//terraform-exafunction-aws-29a260f"
   cluster_name = local.cluster_name
   vpc_id       = module.vpc.vpc_id
   subnets      = module.vpc.private_subnets
