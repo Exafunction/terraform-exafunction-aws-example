@@ -37,7 +37,7 @@ variable "remote_state_config" {
   })
 
   validation {
-    condition     = can(regex("^[a-zA-Z\\.\\-]{3,63}$", var.remote_state_config.bucket))
+    condition     = can(regex("^[a-zA-Z0-9\\.\\-]{3,63}$", var.remote_state_config.bucket))
     error_message = "Invalid AWS bucket name format in `remote_state_config`."
   }
 
