@@ -8,12 +8,13 @@ variable "region" {
   }
 }
 
-variable "bucket" {
-  description = "Name of the S3 bucket to use for storing terraform state."
+variable "remote_state_bucket_suffix" {
+  description = "Optional suffix for the S3 bucket to use for storing terraform state."
   type        = string
+  default     = ""
 
   validation {
-    condition     = can(regex("^[a-zA-Z0-9\\.\\-]{3,63}$", var.bucket))
-    error_message = "Invalid AWS bucket name format."
+    condition     = can(regex("^[a-zA-Z0-9\\.\\-]{0,33}$", var.remote_state_bucket_suffix))
+    error_message = "Invalid AWS bucket suffix format."
   }
 }

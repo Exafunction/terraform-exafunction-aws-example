@@ -41,9 +41,6 @@ This file contains the configuration for the Terraform modules. Users should mod
 ### [`values.yaml`](/values.yaml)
 Users should modify this file to provide the image names for ExaDeploy system components. These image names should be in the release provided by Exafunction.
 
-### [`config.s3.tfbackend`](/config.s3.tfbackend)
-This file contains the configuration for the S3 backend used to manage [Terraform state](https://www.terraform.io/language/state). Reasonable defaults are provided and users can modify as needed. Note that this S3 bucket **should not** already exist as its creation and management will be handled by Terraform.
-
 ## Create
 After finishing configuration, run
 ```bash
@@ -61,8 +58,8 @@ To get these addresses, run these commands from the repository's root directory:
 ### Update Local Kubeconfig
 ```bash
 aws eks update-kubeconfig \
-    --region $(terraform -chdir=aws output region | tr -d '"') \
-    --name $(terraform -chdir=aws output cluster_id | tr -d '"')
+    --region $(terraform -chdir=aws output -raw region) \
+    --name $(terraform -chdir=aws output -raw cluster_id)
 ```
 
 ### Module Repository

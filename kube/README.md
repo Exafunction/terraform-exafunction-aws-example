@@ -13,14 +13,14 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.26.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_exafunction_kube"></a> [exafunction\_kube](#module\_exafunction\_kube) | https://storage.googleapis.com/exafunction-dist/terraform-exafunction-kube-fd1071f.tar.gz//terraform-exafunction-kube-fd1071f | n/a |
+| <a name="module_exafunction_kube"></a> [exafunction\_kube](#module\_exafunction\_kube) | https://storage.googleapis.com/exafunction-dist/terraform-exafunction-kube-619f94c.tar.gz//terraform-exafunction-kube-619f94c | n/a |
 
 ## Resources
 
