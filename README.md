@@ -8,11 +8,13 @@ This installation is responsible for creating a new VPC, new EKS cluster, ExaDep
 Users should clone this repository locally and follow the steps below to setup ExaDeploy.
 
 ## Prerequisites
-This repository is dependent on Terraform and Helm, which can be installed according to these directions:
+This repository is dependent on Terraform, Helm, kubectl, and AWS CLI which can be installed according to these directions:
 * [Terraform](https://www.terraform.io/downloads)
 * [Helm](https://helm.sh/docs/intro/install/)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+* [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
-After installation you should be able to run both `terraform` and `helm` as commands in the command line (these commands will show documentation when run without arguments).
+After installation you should be able to run both `terraform`, `helm`, `kubectl`, and `aws` as commands in the command line (these commands will show documentation when run without arguments).
 
 ## Configuration
 There are a few configuration files that must be modified prior to running this installation. If you will be running applications in existing AWS infrastructure outside of the newly created EKS cluster, you will need to configure VPC peering (see below).
@@ -47,14 +49,7 @@ After finishing configuration, run
 ```bash
 ./create.sh
 ```
-from the repository's root directory. It may take some time (up to 30 minutes) to finish applying as it needs to spin up and configure many new AWS resources.
-
-## Destroy
-Run
-```bash
-./destroy.sh
-```
-from the repoistory's root directory. This will delete all resources created by the installation including the ExaDeploy system, VPC peering connection, EKS cluster, and VPC.
+from the repository's root directory. It may take some time (up to 30 minutes) to finish applying as it needs to spin up and configure many new AWS resources. Note that `create.sh` is idempotent and can be rerun with updated configuration to update the deployed infrastructure.
 
 ## Running applications with ExaDeploy
 For instructions on how to write and run applications that offload GPU computations to ExaDeploy, see our Quickstart Guide.
@@ -83,3 +78,10 @@ kubectl get service scheduler-service \
 ```
 
 Both should return addresses in the format of `internal-<elb_name>-<digits>.<region>.elb.amazonaws.com`.
+
+## Destroy
+In order to destroy all the infrastructure set up by the repository, run
+```bash
+./destroy.sh
+```
+from the repository's root directory. This will delete all resources created by the installation including the ExaDeploy system, VPC peering connection, EKS cluster, and VPC.
