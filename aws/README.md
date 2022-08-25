@@ -11,13 +11,13 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.27.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_exafunction"></a> [exafunction](#module\_exafunction) | https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-29a260f.tar.gz//terraform-exafunction-aws-29a260f | n/a |
+| <a name="module_exafunction"></a> [exafunction](#module\_exafunction) | https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-02816cc.tar.gz//terraform-exafunction-aws-02816cc | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 | <a name="module_vpc_peer"></a> [vpc\_peer](#module\_vpc\_peer) | ./modules/vpc_peer | n/a |
 
