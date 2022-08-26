@@ -47,6 +47,16 @@ module "exafunction" {
   }]
 }
 
+# Enable inbound traffic from within the VPC (including instances outside the cluster).
+resource "aws_security_group_rule" "exafunction_ingress_in_vpc" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = [var.vpc_cidr]
+  security_group_id = module.exafunction.cluster_primary_security_group_id
+}
+
 data "aws_route_table" "main" {
   filter {
     name   = "vpc-id"
