@@ -22,6 +22,8 @@ module "exafunction_cluster" {
   subnet_ids   = module.exafunction_network.private_subnets
 
   runner_pools = var.runner_pools
+
+  instance_tags = var.instance_tags
 }
 
 module "exafunction_module_repo_backend" {
