@@ -96,3 +96,9 @@ variable "vpc_peering_config" {
     error_message = "`peer_vpc_id` and `peer_subnet_ids` are required when VPC peering is enabled."
   }
 }
+
+variable "instance_tags" {
+  description = "Tags to apply to all EC2 instances managed by the cluster."
+  type        = map(string)
+  default     = {}
+}
