@@ -1,11 +1,15 @@
 # terraform-exafunction-aws-example
 
+![Banner](images/banner.png)
+
 ## Overview
-This repository acts as a quickstart to setup ExaDeploy for AWS. It is specifically designed for users that want to spin up an ExaDeploy system in a new EKS cluster and offload remote GPU computations from applications running in either existing AWS infrastructure (such as on EC2 instances or in a different EKS cluster) or within the newly created EKS cluster.
+This repository acts as a way to quickly set up ExaDeploy for AWS. It is specifically designed for users that want to create an ExaDeploy system in a new EKS cluster and offload remote GPU computations from applications running in either existing AWS infrastructure (such as on EC2 instances or in a different EKS cluster) or within the newly created EKS cluster.
 
 This installation is responsible for creating a new VPC, new EKS cluster, ExaDeploy system in that cluster, and optional VPC peering mechanism (along with associated routing and security group rules) between an existing VPC and the newly created VPC.
 
 Users should clone this repository locally and follow the steps below to setup ExaDeploy.
+
+For advanced users or users that want to integrate this setup into their existing Terraform code, we recommend directly using our Terraform modules (which are called internally in this repository). See [exafunction-cloud](https://registry.terraform.io/modules/Exafunction/exafunction-cloud/aws) and [exafunction-kube](https://registry.terraform.io/modules/Exafunction/exafunction-kube/aws) in the [Terraform Registry](https://registry.terraform.io/) for module reference.
 
 ## Prerequisites
 This repository is dependent on Terraform, Helm, kubectl, and AWS CLI which can be installed according to these directions:
@@ -14,10 +18,10 @@ This repository is dependent on Terraform, Helm, kubectl, and AWS CLI which can 
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
-After installation you should be able to run both `terraform`, `helm`, `kubectl`, and `aws` as commands in the command line (these commands will show documentation when run without arguments).
+After installation you should be able to run `terraform`, `helm`, `kubectl`, and `aws` as commands in the command line (these commands will show documentation when run without arguments).
 
 ## Configuration
-There are a few configuration files that must be modified prior to running this installation. If you will be running applications in existing AWS infrastructure outside of the newly created EKS cluster, you will need to configure VPC peering (see below).
+There are a few configuration parameters that must be modified prior to running this installation. If you will be running applications in existing AWS infrastructure outside of the newly created EKS cluster, you will need to configure VPC peering (see below).
 
 ### [`config.tfvars`](/config.tfvars)
 This file contains the configuration for the Terraform modules. Users should modify:
@@ -33,13 +37,35 @@ This file contains the configuration for the Terraform modules. Users should mod
     * `peer_subnet_ids`: The IDs of the subnets to peer with.
         * This should be the list of IDs for all subnets running applications that will interact with ExaDeploy.
         * The set of subnet IDs can be easily updated later if you end up running applications in a new subnet.
+* `runner_pools`: Configuration for Exafunction runner node pools.
+    * `suffix`: Unique suffix for the node pool name.
+    * `node_instance_category`: One of (`cpu`, `gpu`).
+    * `capacity_type`: One of (`ON_DEMAND`, `SPOT`).
+    * `node_instance_type`: [AWS instance type](https://aws.amazon.com/ec2/instance-types/) for the node pool.
+        * Should be a CPU instance type if `node_instance_category` is `cpu` (and likewise for GPU).
+    * `disk_size`: Size of the disk in GB for the node pool.
+    * `min_size`: Minimum number of nodes in the node pool.
+    * `max_size`: Maximum number of nodes in the node pool.
+    * `accelerator_label`: Label for the GPU accelerator.
+        * Should be determined by the `node_instance_type`.
+        * Only required if `node_instance_category` is `gpu`.
+    * `additional_taints`: Additional taints to add to the node pool.
+        * In most cases this should be left as an empty list.
+    * `additional_labels`: Additional labels to add to the node pool.
+        * In most cases this should be left as an empty list.
+* `exadeploy_helm_chart_version`: The version of the [ExaDeploy Helm chart](https://github.com/Exafunction/helm-charts/tree/main/charts/exadeploy) to install.
+    * This should be in the release provided by Exafunction.
 * `api_key`: The API key used to identify your company to Exafunction.
     * This should be provided by Exafunction.
-* `exafunction_chart_version`: The version of the Exafunction Helm chart to install.
-    * This should be in the release provided by Exafunction.
+* `scheduler_image`: The image of the ExaDeploy scheduler.
+    * This should be provided by Exafunction.
+* `module_repository_image`: The image of the ExaDeploy module repository.
+    * This should be provided by Exafunction.
+* `runner_image`: The image of the ExaDeploy runner.
+    * This should be provided by Exafunction.
 
 ### [`values.yaml`](/values.yaml)
-Users should modify this file to provide the image names for ExaDeploy system components. These image names should be in the release provided by Exafunction.
+Optional configuration for the [ExaDeploy Helm chart](https://github.com/Exafunction/helm-charts/tree/main/charts/exadeploy). This should only be necessary to add to in advanced use cases. To see Helm chart configuration options, see the Helm chart [values schema](https://github.com/Exafunction/helm-charts/tree/main/charts/exadeploy#values).
 
 ## Create
 After finishing configuration, run
@@ -59,7 +85,7 @@ To get these addresses, run these commands from the repository's root directory:
 ```bash
 aws eks update-kubeconfig \
     --region $(terraform -chdir=aws output -raw region) \
-    --name $(terraform -chdir=aws output -raw cluster_id)
+    --name $(terraform -chdir=aws output -raw cluster_name)
 ```
 
 ### Module Repository

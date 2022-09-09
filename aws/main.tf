@@ -1,63 +1,45 @@
 locals {
-  cluster_suffix = var.cluster_suffix == "" ? "" : "-${var.cluster_suffix}"
-  cluster_name   = "exafunction-cluster${local.cluster_suffix}"
+  unique_suffix = var.unique_suffix == "" ? "" : "-${var.unique_suffix}"
+  cluster_name  = "exafunction-cluster${local.unique_suffix}"
 }
 
 data "aws_availability_zones" "available" {}
 
-# Create VPC.
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
+module "exafunction_network" {
+  source  = "Exafunction/exafunction-cloud/aws//modules/network"
+  version = "0.1.0"
 
-  name                 = "exafunction-vpc${local.cluster_suffix}"
-  cidr                 = var.vpc_cidr
-  azs                  = data.aws_availability_zones.available.names
-  private_subnets      = [cidrsubnet(var.vpc_cidr, 8, 1), cidrsubnet(var.vpc_cidr, 8, 2), cidrsubnet(var.vpc_cidr, 8, 3)]
-  public_subnets       = [cidrsubnet(var.vpc_cidr, 8, 4), cidrsubnet(var.vpc_cidr, 8, 5), cidrsubnet(var.vpc_cidr, 8, 6)]
-  database_subnets     = [cidrsubnet(var.vpc_cidr, 8, 7), cidrsubnet(var.vpc_cidr, 8, 8), cidrsubnet(var.vpc_cidr, 8, 9)]
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
-  }
+  vpc_cidr_block = var.vpc_cidr
+  vpc_name       = "exafunction-vpc${local.unique_suffix}"
 }
 
-# Create EKS cluster.
-module "exafunction" {
-  source       = "https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-02816cc.tar.gz//terraform-exafunction-aws-02816cc"
+module "exafunction_cluster" {
+  source  = "Exafunction/exafunction-cloud/aws//modules/cluster"
+  version = "0.1.0"
+
   cluster_name = local.cluster_name
-  vpc_id       = module.vpc.vpc_id
-  subnets      = module.vpc.private_subnets
-  runner_pools = [{
-    suffix                 = "gpu"
-    node_instance_category = "gpu"
-    node_instance_type     = var.gpu_node_config.gpu_ec2_instance_type
-    min_capacity           = var.gpu_node_config.min_gpu_nodes
-    max_capacity           = var.gpu_node_config.max_gpu_nodes
-    accelerator_label      = var.gpu_node_config.accelerator_label
-  }]
+  vpc_id       = module.exafunction_network.vpc_id
+  subnet_ids   = module.exafunction_network.private_subnets
+
+  runner_pools = var.runner_pools
 }
 
-# Enable inbound traffic from within the VPC (including instances outside the cluster).
-resource "aws_security_group_rule" "exafunction_ingress_in_vpc" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = [var.vpc_cidr]
-  security_group_id = module.exafunction.cluster_primary_security_group_id
+module "exafunction_module_repo_backend" {
+  source  = "Exafunction/exafunction-cloud/aws//modules/module_repo_backend"
+  version = "0.1.0"
+
+  exadeploy_id         = "exafunction${local.unique_suffix}"
+  db_subnet_group_name = module.exafunction_network.database_subnet_group_name
+  vpc_security_group_ids = [
+    module.exafunction_cluster.cluster_primary_security_group_id,
+    module.exafunction_cluster.cluster_security_group_id,
+    module.exafunction_cluster.node_security_group_id,
+  ]
 }
 
 data "aws_route_table" "main" {
+  count = var.vpc_peering_config.enabled ? 1 : 0
+
   filter {
     name   = "vpc-id"
     values = [var.vpc_peering_config.peer_vpc_id]
@@ -69,6 +51,8 @@ data "aws_route_table" "main" {
 }
 
 data "aws_route_tables" "peer" {
+  count = var.vpc_peering_config.enabled ? 1 : 0
+
   filter {
     name   = "association.subnet-id"
     values = var.vpc_peering_config.peer_subnet_ids
@@ -76,23 +60,20 @@ data "aws_route_tables" "peer" {
 }
 
 locals {
-  # TODO(nick): Fix bug where if some of the peer subnets have explicit route table associations and
-  # some do not, the main route table (used for subnets without explicit route table association)
-  # will not be included.
-  peer_route_table_ids = length(data.aws_route_tables.peer.ids) > 0 ? data.aws_route_tables.peer.ids : [data.aws_route_table.main.id]
+  # TODO(nick): Fix case where if some of the peer subnets have explicit route table associations
+  # and some do not, the main route table (used for subnets without explicit route table
+  # association) will not be included.
+  peer_route_table_ids = var.vpc_peering_config.enabled ? (length(one(data.aws_route_tables.peer).ids) > 0 ? one(data.aws_route_tables.peer).ids : [one(data.aws_route_table.main).id]) : []
 }
 
-module "vpc_peer" {
-  count = var.vpc_peering_config.enabled ? 1 : 0
-  depends_on = [
-    module.vpc,
-    module.exafunction,
-  ]
-  source                            = "./modules/vpc_peer"
-  vpc_id                            = module.vpc.vpc_id
-  private_subnets                   = module.vpc.private_subnets
-  vpc_cidr_block                    = module.vpc.vpc_cidr_block
-  cluster_primary_security_group_id = module.exafunction.cluster_primary_security_group_id
-  peer_vpc_id                       = var.vpc_peering_config.peer_vpc_id
-  peer_route_table_ids              = local.peer_route_table_ids
+module "exafunction_peering" {
+  count   = var.vpc_peering_config.enabled ? 1 : 0
+  version = "0.1.0"
+
+  source               = "Exafunction/exafunction-cloud/aws//modules/peering"
+  vpc_id               = module.exafunction_network.vpc_id
+  route_table_ids      = module.exafunction_network.private_route_table_ids
+  security_group_id    = module.exafunction_cluster.node_security_group_id
+  peer_vpc_id          = var.vpc_peering_config.peer_vpc_id
+  peer_route_table_ids = local.peer_route_table_ids
 }
