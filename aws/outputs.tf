@@ -1,67 +1,30 @@
 output "region" {
-  description = "Region of the EKS cluster."
+  description = "Region of the EKS cluster.."
   value       = var.region
 }
 
-output "cluster_id" {
-  description = "ID of the EKS cluster."
-  value       = module.exafunction.cluster_id
+output "cluster_name" {
+  description = "Name of the EKS cluster.."
+  value       = module.exafunction_cluster.cluster_name
 }
 
-output "vpc_id" {
-  description = "ID of the VPC."
-  value       = module.vpc.vpc_id
+output "exafunction_network" {
+  description = "Exafunction network module."
+  value       = module.exafunction_network
 }
 
-output "cluster_primary_security_group_id" {
-  description = "ID of the EKS cluster security group"
-  value       = module.exafunction.cluster_primary_security_group_id
+output "exafunction_cluster" {
+  description = "Exafunction cluster module."
+  value       = module.exafunction_cluster
 }
 
-output "cluster_security_group_id" {
-  description = "ID of the EKS cluster additional security group"
-  value       = module.exafunction.cluster_security_group_id
-}
-
-output "worker_security_group_id" {
-  description = "ID of the EKS workers security group"
-  value       = module.exafunction.worker_security_group_id
-}
-
-output "cluster_iam_user_access_key" {
-  description = "Access key for the cluster IAM user"
+output "exafunction_module_repo_backend" {
+  description = "Exafunction module repository backend module."
+  value       = module.exafunction_module_repo_backend
   sensitive   = true
-  value       = module.exafunction.cluster_iam_user_access_key
 }
 
-output "cluster_iam_user_secret_key" {
-  description = "Secret key for the cluster IAM user"
-  sensitive   = true
-  value       = module.exafunction.cluster_iam_user_secret_key
-}
-
-output "rds_address" {
-  description = "Address for the RDS instance"
-  value       = module.exafunction.rds_address
-}
-
-output "rds_username" {
-  description = "Username for the RDS instance"
-  value       = module.exafunction.rds_username
-}
-
-output "rds_port" {
-  description = "Port for the RDS instance"
-  value       = module.exafunction.rds_port
-}
-
-output "rds_password" {
-  description = "Password for the RDS instance"
-  sensitive   = true
-  value       = module.exafunction.rds_password
-}
-
-output "s3_bucket_id" {
-  description = "ID of the S3 bucket"
-  value       = module.exafunction.s3_bucket_id
+output "exafunction_peering" {
+  description = "Exafunction peering module."
+  value       = module.exafunction_peering
 }

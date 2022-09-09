@@ -2,7 +2,7 @@ provider "aws" {
   region = var.region
 }
 
-data "terraform_remote_state" "cluster" {
+data "terraform_remote_state" "cloud" {
   backend = "s3"
   config = {
     bucket = var.remote_state_config.bucket
@@ -12,11 +12,11 @@ data "terraform_remote_state" "cluster" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = data.terraform_remote_state.cluster.outputs.cluster_id
+  name = data.terraform_remote_state.cloud.outputs.exafunction_cluster.cluster_name
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = data.terraform_remote_state.cluster.outputs.cluster_id
+  name = data.terraform_remote_state.cloud.outputs.exafunction_cluster.cluster_name
 }
 
 provider "kubernetes" {

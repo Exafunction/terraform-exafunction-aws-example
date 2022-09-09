@@ -3,29 +3,19 @@
 This Terraform module is used to set up a new EKS cluster that can be integrated with existing infrastructure outside of EKS (or in an existing, separate EKS cluster). It is responsible for creating a new VPC, new EKS cluster, and optional VPC peering mechanism (along with associated routing and security group rules) between an existing VPC and the newly created VPC.
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.27.0 |
-
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_exafunction"></a> [exafunction](#module\_exafunction) | https://storage.googleapis.com/exafunction-dist/terraform-exafunction-aws-02816cc.tar.gz//terraform-exafunction-aws-02816cc | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
-| <a name="module_vpc_peer"></a> [vpc\_peer](#module\_vpc\_peer) | ./modules/vpc_peer | n/a |
+| <a name="module_exafunction_cluster"></a> [exafunction\_cluster](#module\_exafunction\_cluster) | Exafunction/exafunction-cloud/aws//modules/cluster | 0.1.0 |
+| <a name="module_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#module\_exafunction\_module\_repo\_backend) | Exafunction/exafunction-cloud/aws//modules/module_repo_backend | 0.1.0 |
+| <a name="module_exafunction_network"></a> [exafunction\_network](#module\_exafunction\_network) | Exafunction/exafunction-cloud/aws//modules/network | 0.1.0 |
+| <a name="module_exafunction_peering"></a> [exafunction\_peering](#module\_exafunction\_peering) | Exafunction/exafunction-cloud/aws//modules/peering | 0.1.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_security_group_rule.exafunction_ingress_in_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_route_table.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route_table) | data source |
 | [aws_route_tables.peer](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route_tables) | data source |
@@ -34,9 +24,9 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_cluster_suffix"></a> [cluster\_suffix](#input\_cluster\_suffix) | Unique suffix to add to the cluster (and VPC). Useful if trying to spin up multiple Exafunction clusters. | `string` | `""` | no |
-| <a name="input_gpu_node_config"></a> [gpu\_node\_config](#input\_gpu\_node\_config) | GPU node configuration. `gpu_ec2_instance_type` is the EC2 instance type to use for the GPU nodes. `min_gpu_nodes` and `max_gpu_nodes` define the minimum and maximum number of nodes in the GPU node pool. `accelerator_label` is the label of the GPU accelerator to use and should be determined by the accelerator type of `gpu_ec2_instance_type`. | <pre>object({<br>    gpu_ec2_instance_type = string<br>    min_gpu_nodes         = number<br>    max_gpu_nodes         = number<br>    accelerator_label     = string<br>  })</pre> | <pre>{<br>  "accelerator_label": "nvidia-tesla-t4",<br>  "gpu_ec2_instance_type": "g4dn.xlarge",<br>  "max_gpu_nodes": 10,<br>  "min_gpu_nodes": 1<br>}</pre> | no |
 | <a name="input_region"></a> [region](#input\_region) | Region for VPC and EKS. If using VPC peering, this should be the same as the region of the peered VPC. | `string` | n/a | yes |
+| <a name="input_runner_pools"></a> [runner\_pools](#input\_runner\_pools) | Configuration parameters for Exafunction runner node pools. | <pre>list(object({<br>    # Node group suffix.<br>    suffix = string<br>    # One of (cpu, gpu).<br>    node_instance_category = string<br>    # One of (ON_DEMAND, SPOT).<br>    capacity_type = string<br>    # Instance type.<br>    node_instance_type = string<br>    # Disk size.<br>    disk_size = number<br>    # Minimum number of nodes.<br>    min_size = number<br>    # Maximum number of nodes.<br>    max_size = number<br>    # Value for k8s.amazonaws.com/accelerator.<br>    accelerator_label = string<br>    # Additional taints.<br>    additional_taints = list(object({<br>      key    = string<br>      value  = string<br>      effect = string<br>    }))<br>    # Additional labels.<br>    additional_labels = map(string)<br>  }))</pre> | <pre>[<br>  {<br>    "accelerator_label": "nvidia-tesla-t4",<br>    "additional_labels": {},<br>    "additional_taints": [],<br>    "capacity_type": "ON_DEMAND",<br>    "disk_size": 100,<br>    "max_size": 10,<br>    "min_size": 1,<br>    "node_instance_category": "gpu",<br>    "node_instance_type": "g4dn.xlarge",<br>    "suffix": "gpu"<br>  }<br>]</pre> | no |
+| <a name="input_unique_suffix"></a> [unique\_suffix](#input\_unique\_suffix) | Unique suffix to add to the AWS resources. Useful if trying to spin up multiple Exafunction clusters. | `string` | `""` | no |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | CIDR range for VPC. If using VPC peering, make sure this does not overlap with addresses in the peered VPC CIDR range. In most cases, this should be a /16 CIDR range. | `string` | n/a | yes |
 | <a name="input_vpc_peering_config"></a> [vpc\_peering\_config](#input\_vpc\_peering\_config) | VPC peering connection configuration. `peer_vpc_id` is the ID of the VPC to peer with. `peer_subnet_ids` are the list of subnet IDs that are expected to send requests to the ExaDeploy cluster. | <pre>object({<br>    enabled         = bool<br>    peer_vpc_id     = string<br>    peer_subnet_ids = list(string)<br>  })</pre> | n/a | yes |
 
@@ -44,17 +34,10 @@ No requirements.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_cluster_iam_user_access_key"></a> [cluster\_iam\_user\_access\_key](#output\_cluster\_iam\_user\_access\_key) | Access key for the cluster IAM user |
-| <a name="output_cluster_iam_user_secret_key"></a> [cluster\_iam\_user\_secret\_key](#output\_cluster\_iam\_user\_secret\_key) | Secret key for the cluster IAM user |
-| <a name="output_cluster_id"></a> [cluster\_id](#output\_cluster\_id) | ID of the EKS cluster. |
-| <a name="output_cluster_primary_security_group_id"></a> [cluster\_primary\_security\_group\_id](#output\_cluster\_primary\_security\_group\_id) | ID of the EKS cluster security group |
-| <a name="output_cluster_security_group_id"></a> [cluster\_security\_group\_id](#output\_cluster\_security\_group\_id) | ID of the EKS cluster additional security group |
-| <a name="output_rds_address"></a> [rds\_address](#output\_rds\_address) | Address for the RDS instance |
-| <a name="output_rds_password"></a> [rds\_password](#output\_rds\_password) | Password for the RDS instance |
-| <a name="output_rds_port"></a> [rds\_port](#output\_rds\_port) | Port for the RDS instance |
-| <a name="output_rds_username"></a> [rds\_username](#output\_rds\_username) | Username for the RDS instance |
-| <a name="output_region"></a> [region](#output\_region) | Region of the EKS cluster. |
-| <a name="output_s3_bucket_id"></a> [s3\_bucket\_id](#output\_s3\_bucket\_id) | ID of the S3 bucket |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | ID of the VPC. |
-| <a name="output_worker_security_group_id"></a> [worker\_security\_group\_id](#output\_worker\_security\_group\_id) | ID of the EKS workers security group |
+| <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | Name of the EKS cluster.. |
+| <a name="output_exafunction_cluster"></a> [exafunction\_cluster](#output\_exafunction\_cluster) | Exafunction cluster module. |
+| <a name="output_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#output\_exafunction\_module\_repo\_backend) | Exafunction module repository backend module. |
+| <a name="output_exafunction_network"></a> [exafunction\_network](#output\_exafunction\_network) | Exafunction network module. |
+| <a name="output_exafunction_peering"></a> [exafunction\_peering](#output\_exafunction\_peering) | Exafunction peering module. |
+| <a name="output_region"></a> [region](#output\_region) | Region of the EKS cluster.. |
 <!-- END_TF_DOCS -->

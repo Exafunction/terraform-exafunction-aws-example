@@ -1,27 +1,65 @@
-variable "cluster_suffix" {
-  description = "Unique suffix to add to the cluster (and VPC). Useful if trying to spin up multiple Exafunction clusters."
+variable "unique_suffix" {
+  description = "Unique suffix to add to the AWS resources. Useful if trying to spin up multiple Exafunction clusters."
   type        = string
   default     = ""
 
   validation {
-    condition     = can(regex("^[a-zA-Z0-9\\-]*$", var.cluster_suffix))
-    error_message = "Invalid cluster suffix format."
+    condition     = can(regex("^[a-zA-Z0-9\\-]*$", var.unique_suffix))
+    error_message = "Invalid unique suffix format."
   }
 }
 
-variable "gpu_node_config" {
-  description = "GPU node configuration. `gpu_ec2_instance_type` is the EC2 instance type to use for the GPU nodes. `min_gpu_nodes` and `max_gpu_nodes` define the minimum and maximum number of nodes in the GPU node pool. `accelerator_label` is the label of the GPU accelerator to use and should be determined by the accelerator type of `gpu_ec2_instance_type`."
-  type = object({
-    gpu_ec2_instance_type = string
-    min_gpu_nodes         = number
-    max_gpu_nodes         = number
-    accelerator_label     = string
-  })
-  default = {
-    gpu_ec2_instance_type = "g4dn.xlarge"
-    min_gpu_nodes         = 1
-    max_gpu_nodes         = 10
-    accelerator_label     = "nvidia-tesla-t4"
+variable "runner_pools" {
+  description = "Configuration parameters for Exafunction runner node pools."
+  type = list(object({
+    # Node group suffix.
+    suffix = string
+    # One of (cpu, gpu).
+    node_instance_category = string
+    # One of (ON_DEMAND, SPOT).
+    capacity_type = string
+    # Instance type.
+    node_instance_type = string
+    # Disk size.
+    disk_size = number
+    # Minimum number of nodes.
+    min_size = number
+    # Maximum number of nodes.
+    max_size = number
+    # Value for k8s.amazonaws.com/accelerator.
+    accelerator_label = string
+    # Additional taints.
+    additional_taints = list(object({
+      key    = string
+      value  = string
+      effect = string
+    }))
+    # Additional labels.
+    additional_labels = map(string)
+  }))
+  default = [{
+    suffix                 = "gpu"
+    node_instance_category = "gpu"
+    capacity_type          = "ON_DEMAND"
+    node_instance_type     = "g4dn.xlarge"
+    disk_size              = 100
+    min_size               = 1
+    max_size               = 10
+    accelerator_label      = "nvidia-tesla-t4"
+    additional_taints      = []
+    additional_labels      = {}
+  }]
+  validation {
+    condition = alltrue([
+      for runner_pool in var.runner_pools : contains(["cpu", "gpu"], runner_pool.node_instance_category)
+    ])
+    error_message = "Node instance category be one of [cpu, gpu]."
+  }
+  validation {
+    condition = alltrue([
+      for runner_pool in var.runner_pools : contains(["ON_DEMAND", "SPOT"], runner_pool.capacity_type)
+    ])
+    error_message = "Capacity type be one of [ON_DEMAND, SPOT]."
   }
 }
 

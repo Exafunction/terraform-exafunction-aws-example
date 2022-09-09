@@ -3,17 +3,6 @@
 This Terraform module is responsible for creating the S3 bucket to store remote Terraform state for the other modules. This module itself uses a local backend to store its state.
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-No requirements.
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_random"></a> [random](#provider\_random) | n/a |
-
 ## Modules
 
 No modules.
@@ -33,7 +22,6 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_region"></a> [region](#input\_region) | Region for S3 bucket | `string` | n/a | yes |
-| <a name="input_remote_state_bucket_suffix"></a> [remote\_state\_bucket\_suffix](#input\_remote\_state\_bucket\_suffix) | Optional suffix for the S3 bucket to use for storing terraform state. | `string` | `""` | no |
 
 ## Outputs
 
