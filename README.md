@@ -52,7 +52,7 @@ This file contains the configuration for the Terraform modules. Users should mod
     * `additional_taints`: Additional taints to add to the node pool.
         * In most cases this should be left as an empty list.
     * `additional_labels`: Additional labels to add to the node pool.
-        * In most cases this should be left as an empty list.
+        * In most cases this should be left as an empty map.
 * `exadeploy_helm_chart_version`: The version of the [ExaDeploy Helm chart](https://github.com/Exafunction/helm-charts/tree/main/charts/exadeploy) to install.
     * This should be in the release provided by Exafunction.
 * `api_key`: The API key used to identify your company to Exafunction.
