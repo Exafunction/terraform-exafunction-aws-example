@@ -1,10 +1,10 @@
 output "region" {
-  description = "Region of the EKS cluster.."
+  description = "Region of the EKS cluster."
   value       = var.region
 }
 
 output "cluster_name" {
-  description = "Name of the EKS cluster.."
+  description = "Name of the EKS cluster."
   value       = module.exafunction_cluster.cluster_name
 }
 

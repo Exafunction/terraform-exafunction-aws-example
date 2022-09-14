@@ -7,10 +7,10 @@ This Terraform module is used to set up a new EKS cluster that can be integrated
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_exafunction_cluster"></a> [exafunction\_cluster](#module\_exafunction\_cluster) | Exafunction/exafunction-cloud/aws//modules/cluster | 0.1.0 |
-| <a name="module_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#module\_exafunction\_module\_repo\_backend) | Exafunction/exafunction-cloud/aws//modules/module_repo_backend | 0.1.0 |
-| <a name="module_exafunction_network"></a> [exafunction\_network](#module\_exafunction\_network) | Exafunction/exafunction-cloud/aws//modules/network | 0.1.0 |
-| <a name="module_exafunction_peering"></a> [exafunction\_peering](#module\_exafunction\_peering) | Exafunction/exafunction-cloud/aws//modules/peering | 0.1.0 |
+| <a name="module_exafunction_cluster"></a> [exafunction\_cluster](#module\_exafunction\_cluster) | Exafunction/exafunction-cloud/aws//modules/cluster | 0.1.1 |
+| <a name="module_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#module\_exafunction\_module\_repo\_backend) | Exafunction/exafunction-cloud/aws//modules/module_repo_backend | 0.1.1 |
+| <a name="module_exafunction_network"></a> [exafunction\_network](#module\_exafunction\_network) | Exafunction/exafunction-cloud/aws//modules/network | 0.1.1 |
+| <a name="module_exafunction_peering"></a> [exafunction\_peering](#module\_exafunction\_peering) | Exafunction/exafunction-cloud/aws//modules/peering | 0.1.1 |
 
 ## Resources
 
@@ -35,10 +35,10 @@ This Terraform module is used to set up a new EKS cluster that can be integrated
 
 | Name | Description |
 |------|-------------|
-| <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | Name of the EKS cluster.. |
+| <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | Name of the EKS cluster. |
 | <a name="output_exafunction_cluster"></a> [exafunction\_cluster](#output\_exafunction\_cluster) | Exafunction cluster module. |
 | <a name="output_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#output\_exafunction\_module\_repo\_backend) | Exafunction module repository backend module. |
 | <a name="output_exafunction_network"></a> [exafunction\_network](#output\_exafunction\_network) | Exafunction network module. |
 | <a name="output_exafunction_peering"></a> [exafunction\_peering](#output\_exafunction\_peering) | Exafunction peering module. |
-| <a name="output_region"></a> [region](#output\_region) | Region of the EKS cluster.. |
+| <a name="output_region"></a> [region](#output\_region) | Region of the EKS cluster. |
 <!-- END_TF_DOCS -->
