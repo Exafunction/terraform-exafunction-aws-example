@@ -97,8 +97,20 @@ variable "vpc_peering_config" {
   }
 }
 
+variable "aws_default_tags" {
+  description = "Tags to apply to all AWS resources."
+  type        = map(string)
+  default     = {}
+}
+
 variable "instance_tags" {
   description = "Tags to apply to all EC2 instances managed by the cluster."
+  type        = map(string)
+  default     = {}
+}
+
+variable "autoscaling_group_tags" {
+  description = "Tags to apply to all autoscaling groups managed by the cluster. These tags will not be propagated to the EC2 instances."
   type        = map(string)
   default     = {}
 }
