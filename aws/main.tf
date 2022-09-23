@@ -7,7 +7,7 @@ data "aws_availability_zones" "available" {}
 
 module "exafunction_network" {
   source  = "Exafunction/exafunction-cloud/aws//modules/network"
-  version = "0.2.1"
+  version = "0.3.0"
 
   vpc_cidr_block = var.vpc_cidr
   vpc_name       = "exafunction-vpc${local.unique_suffix}"
@@ -17,7 +17,7 @@ data "aws_default_tags" "default" {}
 
 module "exafunction_cluster" {
   source  = "Exafunction/exafunction-cloud/aws//modules/cluster"
-  version = "0.2.1"
+  version = "0.3.0"
 
   cluster_name = local.cluster_name
   vpc_id       = module.exafunction_network.vpc_id
@@ -27,11 +27,13 @@ module "exafunction_cluster" {
 
   instance_tags          = merge(data.aws_default_tags.default.tags, var.instance_tags)
   autoscaling_group_tags = merge(data.aws_default_tags.default.tags, var.autoscaling_group_tags)
+
+  log_retention_in_days = var.log_retention_in_days
 }
 
 module "exafunction_module_repo_backend" {
   source  = "Exafunction/exafunction-cloud/aws//modules/module_repo_backend"
-  version = "0.2.1"
+  version = "0.3.0"
 
   exadeploy_id         = "exafunction${local.unique_suffix}"
   db_subnet_group_name = module.exafunction_network.database_subnet_group_name
@@ -73,7 +75,7 @@ locals {
 
 module "exafunction_peering" {
   count   = var.vpc_peering_config.enabled ? 1 : 0
-  version = "0.2.1"
+  version = "0.3.0"
 
   source               = "Exafunction/exafunction-cloud/aws//modules/peering"
   vpc_id               = module.exafunction_network.vpc_id

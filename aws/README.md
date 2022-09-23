@@ -7,10 +7,10 @@ This Terraform module is used to set up a new EKS cluster that can be integrated
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_exafunction_cluster"></a> [exafunction\_cluster](#module\_exafunction\_cluster) | Exafunction/exafunction-cloud/aws//modules/cluster | 0.2.1 |
-| <a name="module_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#module\_exafunction\_module\_repo\_backend) | Exafunction/exafunction-cloud/aws//modules/module_repo_backend | 0.2.1 |
-| <a name="module_exafunction_network"></a> [exafunction\_network](#module\_exafunction\_network) | Exafunction/exafunction-cloud/aws//modules/network | 0.2.1 |
-| <a name="module_exafunction_peering"></a> [exafunction\_peering](#module\_exafunction\_peering) | Exafunction/exafunction-cloud/aws//modules/peering | 0.2.1 |
+| <a name="module_exafunction_cluster"></a> [exafunction\_cluster](#module\_exafunction\_cluster) | Exafunction/exafunction-cloud/aws//modules/cluster | 0.3.0 |
+| <a name="module_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#module\_exafunction\_module\_repo\_backend) | Exafunction/exafunction-cloud/aws//modules/module_repo_backend | 0.3.0 |
+| <a name="module_exafunction_network"></a> [exafunction\_network](#module\_exafunction\_network) | Exafunction/exafunction-cloud/aws//modules/network | 0.3.0 |
+| <a name="module_exafunction_peering"></a> [exafunction\_peering](#module\_exafunction\_peering) | Exafunction/exafunction-cloud/aws//modules/peering | 0.3.0 |
 
 ## Resources
 
@@ -28,6 +28,7 @@ This Terraform module is used to set up a new EKS cluster that can be integrated
 | <a name="input_autoscaling_group_tags"></a> [autoscaling\_group\_tags](#input\_autoscaling\_group\_tags) | Tags to apply to all autoscaling groups managed by the cluster. These tags will not be propagated to the EC2 instances. | `map(string)` | `{}` | no |
 | <a name="input_aws_default_tags"></a> [aws\_default\_tags](#input\_aws\_default\_tags) | Tags to apply to all AWS resources. | `map(string)` | `{}` | no |
 | <a name="input_instance_tags"></a> [instance\_tags](#input\_instance\_tags) | Tags to apply to all EC2 instances managed by the cluster. | `map(string)` | `{}` | no |
+| <a name="input_log_retention_in_days"></a> [log\_retention\_in\_days](#input\_log\_retention\_in\_days) | Number of days to retain EKS control plane logs. | `number` | `90` | no |
 | <a name="input_region"></a> [region](#input\_region) | Region for VPC and EKS. If using VPC peering, this should be the same as the region of the peered VPC. | `string` | n/a | yes |
 | <a name="input_runner_pools"></a> [runner\_pools](#input\_runner\_pools) | Configuration parameters for Exafunction runner node pools. | <pre>list(object({<br>    # Node group suffix.<br>    suffix = string<br>    # One of (cpu, gpu).<br>    node_instance_category = string<br>    # One of (ON_DEMAND, SPOT).<br>    capacity_type = string<br>    # Instance type.<br>    node_instance_type = string<br>    # Disk size.<br>    disk_size = number<br>    # Minimum number of nodes.<br>    min_size = number<br>    # Maximum number of nodes.<br>    max_size = number<br>    # Value for k8s.amazonaws.com/accelerator.<br>    accelerator_label = string<br>    # Additional taints.<br>    additional_taints = list(object({<br>      key    = string<br>      value  = string<br>      effect = string<br>    }))<br>    # Additional labels.<br>    additional_labels = map(string)<br>  }))</pre> | <pre>[<br>  {<br>    "accelerator_label": "nvidia-tesla-t4",<br>    "additional_labels": {},<br>    "additional_taints": [],<br>    "capacity_type": "ON_DEMAND",<br>    "disk_size": 100,<br>    "max_size": 10,<br>    "min_size": 1,<br>    "node_instance_category": "gpu",<br>    "node_instance_type": "g4dn.xlarge",<br>    "suffix": "gpu"<br>  }<br>]</pre> | no |
 | <a name="input_unique_suffix"></a> [unique\_suffix](#input\_unique\_suffix) | Unique suffix to add to the AWS resources. Useful if trying to spin up multiple Exafunction clusters. | `string` | `""` | no |
