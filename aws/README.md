@@ -7,10 +7,10 @@ This Terraform module is used to set up a new EKS cluster that can be integrated
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_exafunction_cluster"></a> [exafunction\_cluster](#module\_exafunction\_cluster) | Exafunction/exafunction-cloud/aws//modules/cluster | 0.2.0 |
-| <a name="module_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#module\_exafunction\_module\_repo\_backend) | Exafunction/exafunction-cloud/aws//modules/module_repo_backend | 0.2.0 |
-| <a name="module_exafunction_network"></a> [exafunction\_network](#module\_exafunction\_network) | Exafunction/exafunction-cloud/aws//modules/network | 0.2.0 |
-| <a name="module_exafunction_peering"></a> [exafunction\_peering](#module\_exafunction\_peering) | Exafunction/exafunction-cloud/aws//modules/peering | 0.2.0 |
+| <a name="module_exafunction_cluster"></a> [exafunction\_cluster](#module\_exafunction\_cluster) | Exafunction/exafunction-cloud/aws//modules/cluster | 0.2.1 |
+| <a name="module_exafunction_module_repo_backend"></a> [exafunction\_module\_repo\_backend](#module\_exafunction\_module\_repo\_backend) | Exafunction/exafunction-cloud/aws//modules/module_repo_backend | 0.2.1 |
+| <a name="module_exafunction_network"></a> [exafunction\_network](#module\_exafunction\_network) | Exafunction/exafunction-cloud/aws//modules/network | 0.2.1 |
+| <a name="module_exafunction_peering"></a> [exafunction\_peering](#module\_exafunction\_peering) | Exafunction/exafunction-cloud/aws//modules/peering | 0.2.1 |
 
 ## Resources
 
