@@ -120,3 +120,9 @@ variable "log_retention_in_days" {
   type        = number
   default     = 90
 }
+
+variable "db_storage_encrypted" {
+  description = "Whether or not to encrypt the database storage."
+  type        = bool
+  default     = false
+}
